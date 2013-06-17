@@ -1,0 +1,153 @@
+<html>
+<head>
+</head>
+	<body style='margin-left: 100px; margin-top:50; background: black; font: white;'>
+		<canvas id='canvas' width='800' height='600' style='border: 1px solid white;'>Sorry, won't work for you =(</canvas>
+		
+		<script>
+		
+		var canvas = document.getElementById('canvas');
+		var art = canvas.getContext('2d');
+		var FPS = 60;
+		
+		setInterval(tick,1000/FPS);
+		
+		var entity = {
+			x: 400,
+			y: 300,
+			vx: 0,
+			vy: 0,
+			ax: 0,
+			ay: 0,
+			radius: 35,
+			color: 'cyan',
+			draw: function() {
+				art.beginPath();
+				art.fillStyle = this.color;
+				art.arc(this.x,this.y,this.radius,0,2*Math.PI);
+				art.stroke();
+				art.fill();
+			},
+			move: function() {
+				this.x += this.vx / FPS;
+				this.y += this.vy / FPS;
+				this.vx += this.ax / FPS;
+				this.vy += this.ay / FPS;
+				
+				if (this.x > canvas.width - this.radius || this.x < 0 + this.radius) {
+					this.vx = -this.vx;
+					this.ax = -this.ax;
+				}
+				
+				if (this.y > canvas.height - this.radius || this.y < 0 + this.radius) {
+					this.vy = -this.vy;
+					this.ay = -this.ay;
+				}
+				
+				if (this.x - this.radius < 0) {
+					this.x = this.radius;
+				}
+				if (this.y - this.radius < 0) {
+					this.y = this.radius;
+				}
+				if (this.x + this.radius > canvas.width) {
+					this.x = canvas.width - this.radius;
+				}
+				if (this.y + this.radius > canvas.height) {
+					this.y = canvas.height - this.radius;
+				}
+			},
+			reset: function() {
+				this.x = 400;
+				this.y = 300;
+				this.vx = 0;
+				this.vy = 0;
+				this.ax = 0;
+				this.ay = 0;
+			}
+		};
+		
+		function reset() {
+			entity.reset();			
+		}
+		
+		function move() {
+			art.clearRect(0,0,canvas.width,canvas.height);
+			entity.draw();
+		}
+		
+		function update() {
+			entity.move();
+		}
+		
+		function tick() {
+			move();
+			update();
+		}
+		
+		window.onkeydown = keydown(e);
+		
+		function keydown(e) {
+			e = e || window.event;
+			var code = e.keyCode || e.which;
+			
+			if(code === 37) {
+				entity.vx = -200;
+				entity.ax = -100;
+			}
+			if(code === 38) {
+				entity.vy = -200;
+				entity.ay = -100;
+			}
+			if(code === 39) {
+				entity.vx = 200;
+				entity.ax = 100;
+			}
+			if(code === 40) {
+				entity.vy = 200;
+				entity.ay = 100;
+			}
+		}
+		
+		window.onkeyup = keyup(e);
+		
+		function keyup(e) {
+			e = e || window.event;
+			var code = e.keyCode || e.which;
+			
+			if(code === 37) {
+				entity.vx = 0;
+				for(i = entity.ax; i < 1; i += 1) {
+					entity.ax = i;
+				}
+			}
+			if(code === 38) {
+				entity.vy = 0;
+				for(i = entity.ay; i < 1; i += 1) {
+					entity.ay = i;
+				}
+			}
+			if(code === 39) {
+				entity.vx = 0;
+				for(i = entity.ax; i > -1; i -= 1) {
+					entity.ax = i;
+				}
+			}
+			if(code === 40) {
+				entity.vy = 0;
+				for(i = entity.ay; i > -1; i -= 1) {
+					entity.ay = i;
+				}
+			}
+			
+			console.log(entity.ax);
+			console.log(entity.ay);
+		}
+		
+		
+		
+		</script>
+		<br/>
+		<button onClick='reset();'>RESET</button>
+	</body>
+</html>
