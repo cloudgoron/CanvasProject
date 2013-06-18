@@ -11,6 +11,8 @@
 		var FPS = 60;
 		
 		setInterval(tick,1000/FPS);
+		setInterval(decayAccel,200);
+		setInterval(decayVelo,200);
 		
 		var entity = {
 			x: 400,
@@ -34,6 +36,7 @@
 				this.vx += this.ax / FPS;
 				this.vy += this.ay / FPS;
 				
+				//Creates Bounce
 				if (this.x > canvas.width - this.radius || this.x < 0 + this.radius) {
 					this.vx = -this.vx;
 					this.ax = -this.ax;
@@ -85,65 +88,80 @@
 			update();
 		}
 		
-		window.onkeydown = keydown(e);
+		function decayAccel() {
+			if (entity.ax > 0) {
+				entity.ax -= 25;
+			}
+			else if (entity.ax < 0) {
+				entity.ax += 25;
+			}
+			else if (entity.ay > 0) {
+				entity.ay -= 25;
+			}
+			else if (entity.ay < 0) {
+				entity.ay += 25;
+			}
+			else {
+				entity.ax = 0;
+				entity.ay = 0;
+			}
+			console.clear();
+			console.log("Entity X-Accel: " + entity.ax);
+			console.log("Entity Y-Accel: " + entity.ay);
+			console.log("Entity X-Velocity: " + entity.vx);
+			console.log("Entity Y-Velocity: " + entity.vy);
+		}
 		
-		function keydown(e) {
+		function decayVelo() {
+			if ( entity.vx > 1 || entity.vy > 1 || entity.vx < -1 || entity.vy < -1) {
+				entity.vx = entity.vx / 2;
+				entity.vy = entity.vy / 2;
+			}
+			else if ( 1 > entity.vx > -1 || 1 > entity.vy > -1) {
+				entity.vx = entity.vx * 0;
+				entity.vy = entity.vy * 0;
+			}
+		}
+				
+		
+		window.onkeydown = function(e) {
 			e = e || window.event;
 			var code = e.keyCode || e.which;
 			
 			if(code === 37) {
 				entity.vx = -200;
-				entity.ax = -100;
+				entity.ax = -200;
 			}
 			if(code === 38) {
 				entity.vy = -200;
-				entity.ay = -100;
+				entity.ay = -200;
 			}
 			if(code === 39) {
 				entity.vx = 200;
-				entity.ax = 100;
+				entity.ax = 200;
 			}
 			if(code === 40) {
 				entity.vy = 200;
-				entity.ay = 100;
+				entity.ay = 200;
 			}
 		}
 		
-		window.onkeyup = keyup(e);
-		
-		function keyup(e) {
+		/*
+		window.onkeyup = function(e) {
 			e = e || window.event;
 			var code = e.keyCode || e.which;
 			
-			if(code === 37) {
+			if(code === 37 || code === 39) {
 				entity.vx = 0;
-				for(i = entity.ax; i < 1; i += 1) {
-					entity.ax = i;
-				}
 			}
-			if(code === 38) {
+			if(code === 38 || code === 40) {
 				entity.vy = 0;
-				for(i = entity.ay; i < 1; i += 1) {
-					entity.ay = i;
-				}
-			}
-			if(code === 39) {
-				entity.vx = 0;
-				for(i = entity.ax; i > -1; i -= 1) {
-					entity.ax = i;
-				}
-			}
-			if(code === 40) {
-				entity.vy = 0;
-				for(i = entity.ay; i > -1; i -= 1) {
-					entity.ay = i;
-				}
 			}
 			
-			console.log(entity.ax);
-			console.log(entity.ay);
+			//console.log(entity.ax);
+			//console.log(entity.ay);
 		}
-		
+		*/
 		
 		
 		</script>
